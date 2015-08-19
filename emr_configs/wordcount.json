@@ -1,0 +1,10 @@
+[
+  {
+    "Name": "wordcount",
+    "Args": ["s3://bdnc2/input","s3://bdnc2/output"],
+    "Jar": "s3://bdnc2/jars/wc64bit.jar",
+    "ActionOnFailure": "TERMINATE_CLUSTER",
+    "MainClass": "WordCount",
+    "Type": "CUSTOM_JAR"
+  }
+]
