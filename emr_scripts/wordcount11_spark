@@ -1,9 +1,10 @@
 aws emr create-cluster \
-    --name "wordcount11" \
+    --name "wordcount11_spark" \
     --instance-type m3.xlarge \
     --release-label emr-4.0.0 \
     --instance-count 2 \
     --use-default-roles \
     --applications file://../emr_configs/applications.json \
-    --steps file://../emr_configs/wordcount.json \
+    --configurations file://../emr_configs/spark_config.json \
+    --steps file://../emr_configs/spark_wordcount_step.json \
     --auto-terminate
