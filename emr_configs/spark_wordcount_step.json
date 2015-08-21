@@ -3,9 +3,7 @@
     "Name": "WordCount",
     "Type":"CUSTOM_JAR",
     "Jar":"command-runner.jar",
-    "Args": ["/home/hadoop/spark/bin/spark-submit","--deploy-mode","cluster", "s3://bdnc2/jars/wordcount_2.10-1.0.jar"],
-    "ActionOnFailure": "TERMINATE_CLUSTER",
-    "MainClass": "WordCount",
-    "Type": "CUSTOM_JAR"
+    "Args": ["spark-submit","--deploy-mode","cluster", "--class", "WordCount", "s3://bdnc2/jars/wordcount_2.10-1.0.jar"],
+    "ActionOnFailure": "TERMINATE_CLUSTER"
   }
 ]

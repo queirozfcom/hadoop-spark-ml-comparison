@@ -2,7 +2,9 @@
   {
     "Classification": "spark-defaults",
     "Properties": {
-      "maximizeResourceAllocation":"true"
+      "spark.dynamicAllocation.enabled": "true",
+      "spark.executor.memory": "2G",
+      "spark.executor.cores": "2"
     }
   }
 ]

@@ -2,6 +2,7 @@ aws emr create-cluster \
     --name "wordcount11_spark" \
     --instance-type m3.xlarge \
     --release-label emr-4.0.0 \
+    --log-uri s3://bdnc2/logs/sparkwordcount11 \
     --instance-count 2 \
     --use-default-roles \
     --applications file://../emr_configs/applications.json \
