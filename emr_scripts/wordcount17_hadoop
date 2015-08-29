@@ -1,8 +1,8 @@
 aws emr create-cluster \
-    --name "wordcount11_hadoop" \
+    --name "wordcount17_hadoop" \
     --instance-type m3.xlarge \
     --release-label emr-4.0.0 \
-    --instance-count 2 \
+    --instance-count 8 \
     --use-default-roles \
     --applications file://../emr_configs/applications.json \
     --steps file://../emr_configs/hadoop_wordcount_step.json \

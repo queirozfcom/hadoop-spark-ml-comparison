@@ -47,7 +47,12 @@ public class WordCount {
 
   public static void main(String[] args) throws Exception {
     Configuration conf = new Configuration();
+
     Job job = Job.getInstance(conf, "word count");
+
+    //read data in directories recursively
+    FileInputFormat.setInputDirRecursive(job, true);
+
     job.setJarByClass(WordCount.class);
     job.setMapperClass(TokenizerMapper.class);
     job.setCombinerClass(IntSumReducer.class);

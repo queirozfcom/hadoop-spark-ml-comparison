@@ -6,4 +6,5 @@ aws emr create-cluster \
     --use-default-roles \
     --applications file://../emr_configs/applications.json \
     --steps file://../emr_configs/hadoop_wordcount_step.json \
+    --configurations file://../emr_configs/hadoop_config.json \
     --auto-terminate

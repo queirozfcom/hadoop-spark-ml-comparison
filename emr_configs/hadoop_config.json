@@ -1,0 +1,8 @@
+[
+ {
+   "Classification": "mapred-site",
+   "Properties": {
+       "mapreduce.input.fileinputformat.input.dir.recursive": "true"
+   }
+ }
+]

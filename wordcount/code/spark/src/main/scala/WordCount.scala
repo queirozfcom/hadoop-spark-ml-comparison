@@ -11,9 +11,7 @@ object WordCount{
 			System.exit(1)
 		}
 
-		val startNano = System.nanoTime
-
-		val inputDir = args(0)
+		val inputDir  = args(0)
 		val outputDir = args(1)	
 
 		val cnf      = new SparkConf().setAppName("Spark Distributed WordCount")
@@ -27,17 +25,5 @@ object WordCount{
 		counts.saveAsTextFile(outputDir)	
 		sc.stop()
 		
-		val endNano = System.nanoTime - startNano
-		val endSeconds = endNano / 10e-9
-
-		System.out.println("\n\n\n")
-		System.out.println("========================================")	
-		System.out.println("========================================")
-		System.out.println(s"Total time elapsed: $endSeconds seconds")
-		System.out.println("========================================")	
-		System.out.println("========================================")
-		System.out.println("\n\n\n") 
-		
-
 	}
 }

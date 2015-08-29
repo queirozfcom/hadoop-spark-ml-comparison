@@ -1,8 +1,8 @@
 [
   {
     "Name": "wordcount",
-    "Args": ["s3://bdnc2/input/billion_word","s3://bdnc2/output_bw"],
-    "Jar": "s3://bdnc2/jars/wc64bit.jar",
+    "Args": ["s3://bdnc2/input/umbc/","s3://bdnc2/output/umbc"],
+    "Jar": "s3://bdnc2/jars/wc.jar",
     "ActionOnFailure": "TERMINATE_CLUSTER",
     "MainClass": "WordCount",
     "Type": "CUSTOM_JAR"
