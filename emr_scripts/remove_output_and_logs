@@ -1,0 +1,2 @@
+aws s3 rm s3://bdnc2/output --recursive
+aws s3 rm s3://bdnc2/logs --recursive

@@ -1,0 +1,11 @@
+aws emr create-cluster \
+    --name "Spark Test Configs" \
+    --instance-type m3.xlarge \
+    --release-label emr-4.0.0 \
+    --log-uri s3://bdnc2/logs/spark_test_config \
+    --instance-count 2 \
+    --use-default-roles \
+    --applications Name=Spark \
+    --steps file://../emr_configs/spark_test_config_step.json \
+    --enable-debugging \
+    --no-auto-terminate

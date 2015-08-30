@@ -9,11 +9,11 @@
         "--num-executors", "2",
         "--executor-cores", "1",
         "--executor-memory", "4g",
-        "--deploy-mode", "cluster",
+        "--deploy-mode", "cluster", 
         "--class", "WordCount", 
         "s3://bdnc2/jars/wordcount_2.10-1.0.jar",
-        "s3://bdnc2/input/umbc/*/*",
-        "s3://bdnc2/output/spark_wordcount"
+        "s3://bdnc2/input/text8_newlines.txt",
+        "s3://bdnc2/output/spark_test_configs"
     ],
     "ActionOnFailure": "TERMINATE_CLUSTER"
   }

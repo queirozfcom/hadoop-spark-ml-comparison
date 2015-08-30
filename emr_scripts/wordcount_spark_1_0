@@ -1,0 +1,10 @@
+aws emr create-cluster \
+    --name "Spark WordCount 1/0" \
+    --instance-type m3.xlarge \
+    --release-label emr-4.0.0 \
+    --log-uri s3://bdnc2/logs/spark_wordcount_1_0 \
+    --instance-count 1 \
+    --use-default-roles \
+    --applications Name=Spark \
+    --steps file://../emr_configs/spark_wordcount_step.json \
+    --auto-terminate
