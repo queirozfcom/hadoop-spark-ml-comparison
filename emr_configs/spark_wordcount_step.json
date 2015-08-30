@@ -6,9 +6,6 @@
     "Args": 
     [
         "spark-submit",
-        "--num-executors", "2",
-        "--executor-cores", "1",
-        "--executor-memory", "4g",
         "--deploy-mode", "cluster",
         "--class", "WordCount", 
         "s3://bdnc2/jars/wordcount_2.10-1.0.jar",
