@@ -7,4 +7,5 @@ aws emr create-cluster \
     --use-default-roles \
     --applications Name=Spark \
     --steps file://../emr_configs/spark_wordcount_step.json \
+    --configurations file://../emr_configs/spark_config.json \
     --auto-terminate
