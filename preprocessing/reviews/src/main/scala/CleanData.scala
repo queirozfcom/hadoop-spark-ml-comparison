@@ -27,121 +27,119 @@ import org.joda.time.{DateTime,LocalTime}
 */
 object CleanData{
 
-	def main(args:Array[String]){
+    def main(args:Array[String]){
 
 
-		if(args.length < 1){
-			System.err.println("Please set arguments for <s3_input_dir> <s3_output_dir>")
-			System.exit(1)
-		}
+        if(args.length < 1){
+            System.err.println("Please set arguments for <s3_input_dir> <s3_output_dir>")
+            System.exit(1)
+        }
 
-		val inputDir  = args(0)
-		val outputDir = args(1)	
+        val inputDir  = args(0)
+        val outputDir = args(1) 
 
-		val cnf      = new SparkConf().setAppName("Cleaning and Featurizing Amazon Review Data")
-		val sc       = new SparkContext(cnf)
-		
-		val sqlContext = new SQLContext(sc)
-		
+        val cnf      = new SparkConf().setAppName("Cleaning and Featurizing Amazon Review Data")
+        val sc       = new SparkContext(cnf)
+        
+        val sqlContext = new SQLContext(sc)
+        
+        // initializing the dataframe from json file
+        val reviewsDF = sqlContext.jsonFile(inputDir)
 
-	    // initializing the dataframe from json file
-	    val reviewsDF = sqlContext.jsonFile(inputDir)
+        val schema = reviewsDF.schema
 
-	    val schema = reviewsDF.schema
+        // transform dataframe into RDD so that we can call filter
+        // to remove any rows with Null values
+        val cleanRDD = reviewsDF.rdd.filter{row:Row => 
 
-	    // transform dataframe into RDD so that we can call filter
-	    // to remove any rows with Null values
-	    // and any bad timestamps
-	    val cleanRDD = reviewsDF.rdd.filter{row:Row => 
+            // // this caused an error in spark:
+            // // val unixTimestampIndex = row.fieldIndex("unixReviewTime")
+            // val unixTimestampIndex = 8
+            // val tryLong = Try(row.getLong(unixTimestampIndex))
 
-	    	// // this caused an error in spark:
-	    	// // val unixTimestampIndex = row.fieldIndex("unixReviewTime")
-	    	// val unixTimestampIndex = 8
-	    	// val tryLong = Try(row.getLong(unixTimestampIndex))
+            row.anyNull == false
+        }
 
-	    	row.anyNull == false
-	    }
+        // then recreate the dataframe
+        val cleanDF = sqlContext.createDataFrame(cleanRDD,schema)
 
-	    // then recreate the dataframe
-	    val cleanDF = sqlContext.createDataFrame(cleanRDD,schema)
+        // transformations
+        val featuresDF = cleanDF.select(col("overall").as("scoreGiven"),
+            stringLengthUDF(col("reviewText")).as("reviewTextLength"),
+            timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
+            timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
+            timestampIsAMUDF(col("unixReviewTime")).as("AM"),
+            timestampIsPMUDF(col("unixReviewTime")).as("PM"),
+            getRatioUDF(col("helpful")).as("percentHelpful"))
+            
+        // save as JSON so we can use it again later    
+        featuresDF.toJSON.saveAsTextFile(outputDir) 
+        sc.stop()
+        
+    }
 
-	    // transformations
-	    val featuresDF = cleanDF.select(col("overall").as("scoreGiven"),
-	    	stringLengthUDF(col("reviewText")).as("reviewTextLength"),
-	    	timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
-	    	timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
-	    	timestampIsAMUDF(col("unixReviewTime")).as("AM"),
-	    	timestampIsPMUDF(col("unixReviewTime")).as("PM"),
-	    	getRatioUDF(col("helpful")).as("percentHelpful"))
-			
-		// save as JSON so we can use it again later	
-	    featuresDF.toJSON.saveAsTextFile(outputDir)	
-		sc.stop()
-		
-	}
+    // returns the length of given text
+    private val stringLengthUDF = udf{txt:String => 
+        txt.length.toDouble
+    }
 
-	// returns the length of given text
-	private val stringLengthUDF = udf{txt:String => 
-		txt.length.toDouble
-	}
+    // outputs 1.0 if given timestamp represents a weekday, 0.0 otherwise
+    private val timestampIsWeekDayUDF = udf{ unixTimestamp:Long =>
+        val date = new DateTime(unixTimestamp * 1000L)
+        date.getDayOfWeek match{
+            case 1 => 1.0
+            case 2 => 1.0
+            case 3 => 1.0
+            case 4 => 1.0
+            case 5 => 1.0
+            case 6 => 0.0
+            case 7 => 0.0
+        }
+    }
 
-	// outputs 1.0 if given timestamp represents a weekday, 0.0 otherwise
-	private val timestampIsWeekDayUDF = udf{ unixTimestamp:Long =>
-		val date = new DateTime(unixTimestamp * 1000L)
-	   	date.getDayOfWeek match{
-	   		case 1 => 1.0
-	   		case 2 => 1.0
-	   		case 3 => 1.0
-	   		case 4 => 1.0
-	   		case 5 => 1.0
-	   		case 6 => 0.0
-	   		case 7 => 0.0
-	   	}
-	}
+    // outputs 1.0 if given timestamp represents weekend, 0.0 otherwise
+    private val timestampIsWeekendUDF = udf{ unixTimestamp:Long =>
+        val date = new DateTime(unixTimestamp * 1000L)
+        date.getDayOfWeek match{
+            case 1 => 0.0
+            case 2 => 0.0
+            case 3 => 0.0
+            case 4 => 0.0
+            case 5 => 0.0
+            case 6 => 1.0
+            case 7 => 1.0
+        }
+    }
 
-	// outputs 1.0 if given timestamp represents weekend, 0.0 otherwise
-	private val timestampIsWeekendUDF = udf{ unixTimestamp:Long =>
-	    val date = new DateTime(unixTimestamp * 1000L)
-	   	date.getDayOfWeek match{
-	   		case 1 => 0.0
-	   		case 2 => 0.0
-	   		case 3 => 0.0
-	   		case 4 => 0.0
-	   		case 5 => 0.0
-	   		case 6 => 1.0
-	   		case 7 => 1.0
-	   	}
-	}
+    // outputs 1.0 if given timestamp represents a time before noon (AM), 0.0 otherwise
+    private val timestampIsAMUDF = udf{ unixTimestamp:Long =>
+        val elevenFiftyNine = new LocalTime(11,59,59)
+        val date = new DateTime(unixTimestamp * 1000L)
 
-	// outputs 1.0 if given timestamp represents a time before noon (AM), 0.0 otherwise
-	private val timestampIsAMUDF = udf{ unixTimestamp:Long =>
-		val elevenFiftyNine = new LocalTime(11,59,59)
-		val date = new DateTime(unixTimestamp * 1000L)
+        date.toLocalTime.compareTo(elevenFiftyNine) match{
+            case -1 => 1.0
+            case 1 => 0.0
+            case _ => 0.0 // just to make sure nothing gets through
+        }
 
-		date.toLocalTime.compareTo(elevenFiftyNine) match{
-			case -1 => 1.0
-			case 1 => 0.0
-			case _ => 0.0 // just to make sure nothing gets through
-		}
+    }
 
-	}
+    // outputs 1.0 if given timestamp represents a time after noon (PM), 0.0 otherwise
+    private val timestampIsPMUDF = udf{ unixTimestamp:Long =>
+        val elevenFiftyNine = new LocalTime(11,59,59)
+        val date = new DateTime(unixTimestamp * 1000L)
 
-	// outputs 1.0 if given timestamp represents a time after noon (PM), 0.0 otherwise
-	private val timestampIsPMUDF = udf{ unixTimestamp:Long =>
-		val elevenFiftyNine = new LocalTime(11,59,59)
-		val date = new DateTime(unixTimestamp * 1000L)
+        date.toLocalTime.compareTo(elevenFiftyNine) match{
+            case -1 => 0.0
+            case 1 => 1.0
+            case _ => 1.0 // just to make sure nothing gets through
+        }
+    }
 
-		date.toLocalTime.compareTo(elevenFiftyNine) match{
-			case -1 => 0.0
-			case 1 => 1.0
-			case _ => 1.0 // just to make sure nothing gets through
-		}
-	}
-
-	// given a pair of ints, return the first divided by the second
-	private val getRatioUDF = udf{ pair: Seq[Long] =>
-		if( pair(1) == 0 ) 0.0
-		else ( pair(0).toDouble/pair(1).toDouble )
-	}
+    // given a pair of ints, return the first divided by the second
+    private val getRatioUDF = udf{ pair: Seq[Long] =>
+        if( pair(1) == 0 ) 0.0
+        else ( pair(0).toDouble/pair(1).toDouble )
+    }
 
 }
