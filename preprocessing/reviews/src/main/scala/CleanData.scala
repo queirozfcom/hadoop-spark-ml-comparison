@@ -44,7 +44,16 @@ object CleanData{
 	    // initializing the dataframe from json file
 	    val reviewsDF = sqlContext.jsonFile(inputDir)
 
-	    val noNullsDF = reviewsDF.filter(row:Row => (row.anyNull == false))
+	    val schema = reviewsDF.schema
+
+	    // transform dataframe into RDD so that we can call filter
+	    // to remove any rows with Null values
+	    val noNullsRDD = reviewsDF.rdd.filter{row:Row => 
+	    	row.anyNull == false
+	    }
+
+	    // then recreate the dataframe
+	    val noNullsRDD = sqlContext.createDataFrame(noNullsRDD,schema)
 
 	    // transformations
 	    val featuresDF = noNullsDF.select(col("overall").as("scoreGiven"),
@@ -54,7 +63,8 @@ object CleanData{
 	    	timestampIsAMUDF(col("unixReviewTime")).as("AM"),
 	    	timestampIsPMUDF(col("unixReviewTime")).as("PM"),
 	    	getRatioUDF(col("overall")).as("percentHelpful"))
-		
+			
+		// save as JSON so we can use it again later	
 	    featuresDF.toJSON.saveAsTextFile(outputDir)	
 		sc.stop()
 		
