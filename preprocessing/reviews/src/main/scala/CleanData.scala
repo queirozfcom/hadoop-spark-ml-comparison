@@ -55,7 +55,7 @@ object CleanData{
 	    	timestampIsPMUDF(col("unixReviewTime")).as("PM"),
 	    	getRatioUDF(col("overall")).as("percentHelpful"))
 		
-	    reviewsV2DF.toJSON.saveAsTextFile(outputDir)	
+	    featuresDF.toJSON.saveAsTextFile(outputDir)	
 		sc.stop()
 		
 	}
