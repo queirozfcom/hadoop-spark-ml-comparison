@@ -53,7 +53,7 @@ object CleanData{
 	    }
 
 	    // then recreate the dataframe
-	    val noNullsRDD = sqlContext.createDataFrame(noNullsRDD,schema)
+	    val noNullsDF = sqlContext.createDataFrame(noNullsRDD,schema)
 
 	    // transformations
 	    val featuresDF = noNullsDF.select(col("overall").as("scoreGiven"),
