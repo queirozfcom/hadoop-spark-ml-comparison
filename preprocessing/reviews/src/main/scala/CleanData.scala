@@ -38,6 +38,7 @@ object CleanData{
 		val inputDir  = args(0)
 		val outputDir = args(1)	
 
+		val cnf      = new SparkConf().setAppName("Cleaning and Featurizing Amazon Review Data")
 		val sc       = new SparkContext(cnf)
 		
 		val sqlContext = new SQLContext(sc)
