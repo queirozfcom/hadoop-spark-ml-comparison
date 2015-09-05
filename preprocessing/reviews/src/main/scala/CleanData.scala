@@ -1,6 +1,3 @@
-
-import scala.util.{Try,Success,Failure}
-
 import org.apache.spark._
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql.SQLContext
@@ -47,8 +44,10 @@ object CleanData{
 	    // initializing the dataframe from json file
 	    val reviewsDF = sqlContext.jsonFile(inputDir)
 
+	    val noNullsDF = reviewsDF.filter(row => row.anyNull == false)
+
 	    // transformations
-	    val reviewsV2DF = reviewsDF.select(col("overall").as("scoreGiven"),
+	    val featuresDF = noNullsDF.select(col("overall").as("scoreGiven"),
 	    	stringLengthUDF(col("reviewText")).as("reviewTextLength"),
 	    	timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
 	    	timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
@@ -68,24 +67,16 @@ object CleanData{
 
 	// outputs 1.0 if given timestamp represents a weekday, 0.0 otherwise
 	private val timestampIsWeekDayUDF = udf{ unixTimestamp:String =>
-
-		Try(unixTimestamp.toLong) match{
-			case Success(num) => {
-				val date = new DateTime(unixTimestamp.toLong * 1000L)
-			   	date.getDayOfWeek match{
-			   		case 1 => 1.0
-			   		case 2 => 1.0
-			   		case 3 => 1.0
-			   		case 4 => 1.0
-			   		case 5 => 1.0
-			   		case 6 => 0.0
-			   		case 7 => 0.0
-			   	}
-			}
-			case Failure(e) => None
-		}
-
-
+		val date = new DateTime(unixTimestamp.toLong * 1000L)
+	   	date.getDayOfWeek match{
+	   		case 1 => 1.0
+	   		case 2 => 1.0
+	   		case 3 => 1.0
+	   		case 4 => 1.0
+	   		case 5 => 1.0
+	   		case 6 => 0.0
+	   		case 7 => 0.0
+	   	}
 	}
 
 	// outputs 1.0 if given timestamp represents weekend, 0.0 otherwise
