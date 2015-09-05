@@ -72,7 +72,7 @@ object CleanData{
 	    	timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
 	    	timestampIsAMUDF(col("unixReviewTime")).as("AM"),
 	    	timestampIsPMUDF(col("unixReviewTime")).as("PM"),
-	    	getRatioUDF(col("overall")).as("percentHelpful"))
+	    	getRatioUDF(col("helpful")).as("percentHelpful"))
 			
 		// save as JSON so we can use it again later	
 	    featuresDF.toJSON.saveAsTextFile(outputDir)	
