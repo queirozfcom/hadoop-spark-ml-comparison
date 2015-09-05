@@ -5,6 +5,8 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.sql.{SQLContext,Row}
 import org.apache.spark.sql.functions.{udf,col}
 
+import scala.collection.mutable.ArrayBuffer
+
 import org.joda.time.{DateTime,LocalTime}
 
 /**
@@ -139,7 +141,7 @@ object CleanData{
 	}
 
 	// given a pair of ints, return the first divided by the second
-	private val getRatioUDF = udf{ pair: Array[Long] =>
+	private val getRatioUDF = udf{ pair: ArrayBuffer[Long] =>
 		pair(0)/pair(1)
 	}
 
