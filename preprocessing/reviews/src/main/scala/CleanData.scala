@@ -5,8 +5,6 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.sql.{SQLContext,Row}
 import org.apache.spark.sql.functions.{udf,col}
 
-import scala.collection.mutable.ArrayBuffer
-
 import org.joda.time.{DateTime,LocalTime}
 
 /**
@@ -44,7 +42,7 @@ object CleanData{
 		val sc       = new SparkContext(cnf)
 		
 		val sqlContext = new SQLContext(sc)
-		import sqlContext.implicits._
+		
 
 	    // initializing the dataframe from json file
 	    val reviewsDF = sqlContext.jsonFile(inputDir)
@@ -125,7 +123,7 @@ object CleanData{
 			case 1 => 0.0
 			case _ => 0.0 // just to make sure nothing gets through
 		}
-		
+
 	}
 
 	// outputs 1.0 if given timestamp represents a time after noon (PM), 0.0 otherwise
@@ -141,7 +139,7 @@ object CleanData{
 	}
 
 	// given a pair of ints, return the first divided by the second
-	private val getRatioUDF = udf{ pair: ArrayBuffer[Long] =>
+	private val getRatioUDF = udf{ pair: Seq[Long] =>
 		if( pair(1) == 0 ) 0.0
 		else ( pair(0).toDouble/pair(1).toDouble )
 	}
