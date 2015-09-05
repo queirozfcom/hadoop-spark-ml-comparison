@@ -1,0 +1,10 @@
+aws emr create-cluster \
+    --name "Clean Review Data" \
+    --instance-type m3.xlarge \
+    --release-label emr-4.0.0 \
+    --instance-count 1 \
+    --use-default-roles \
+    --applications file://../emr_configs/applications.json \
+    --steps file://../emr_configs/spark_clean_review_data_step.json \
+    --configurations file://../emr_configs/spark_config.json \
+    --auto-terminate
