@@ -1,6 +1,6 @@
 import org.apache.spark._
 import org.apache.spark.SparkContext._
-import org.apache.spark.sql.SQLContext
+import org.apache.spark.sql.{SQLContext,Row}
 import org.apache.spark.sql.functions.{udf,col}
 
 import org.joda.time.{DateTime,LocalTime}
@@ -44,7 +44,7 @@ object CleanData{
 	    // initializing the dataframe from json file
 	    val reviewsDF = sqlContext.jsonFile(inputDir)
 
-	    val noNullsDF = reviewsDF.filter(row => row.anyNull == false)
+	    val noNullsDF = reviewsDF.filter(row:Row => row.anyNull == false)
 
 	    // transformations
 	    val featuresDF = noNullsDF.select(col("overall").as("scoreGiven"),
