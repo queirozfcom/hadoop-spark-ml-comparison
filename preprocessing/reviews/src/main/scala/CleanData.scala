@@ -44,7 +44,7 @@ object CleanData{
 	    // initializing the dataframe from json file
 	    val reviewsDF = sqlContext.jsonFile(inputDir)
 
-	    val noNullsDF = reviewsDF.filter(row:Row => row.anyNull == false)
+	    val noNullsDF = reviewsDF.filter(row:Row => (row.anyNull == false))
 
 	    // transformations
 	    val featuresDF = noNullsDF.select(col("overall").as("scoreGiven"),
