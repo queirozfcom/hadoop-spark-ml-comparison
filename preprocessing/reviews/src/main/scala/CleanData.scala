@@ -1,3 +1,5 @@
+import scala.util.Try
+
 import org.apache.spark._
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql.{SQLContext,Row}
@@ -48,15 +50,20 @@ object CleanData{
 
 	    // transform dataframe into RDD so that we can call filter
 	    // to remove any rows with Null values
-	    val noNullsRDD = reviewsDF.rdd.filter{row:Row => 
-	    	row.anyNull == false
+	    // and any bad timestamps
+	    val cleanRDD = reviewsDF.rdd.filter{row:Row => 
+
+	    	val unixTimestampIndex = row.fieldIndex("unixReviewTime")
+	    	val tryLong = Try(row.getLong(unixTimestampIndex))
+
+	    	(row.anyNull == false && tryLong.isSuccess)
 	    }
 
 	    // then recreate the dataframe
-	    val noNullsDF = sqlContext.createDataFrame(noNullsRDD,schema)
+	    val cleanDF = sqlContext.createDataFrame(cleanRDD,schema)
 
 	    // transformations
-	    val featuresDF = noNullsDF.select(col("overall").as("scoreGiven"),
+	    val featuresDF = cleanDF.select(col("overall").as("scoreGiven"),
 	    	stringLengthUDF(col("reviewText")).as("reviewTextLength"),
 	    	timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
 	    	timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
