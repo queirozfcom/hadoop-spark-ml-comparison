@@ -142,7 +142,8 @@ object CleanData{
 
 	// given a pair of ints, return the first divided by the second
 	private val getRatioUDF = udf{ pair: ArrayBuffer[Long] =>
-		pair(0)/pair(1)
+		if( pair(1) == 0 ) 0.0
+		else ( pair(0).toDouble/pair(1).toDouble )
 	}
 
 }
