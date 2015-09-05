@@ -9,7 +9,7 @@
         "--deploy-mode", "cluster",
         "--class", "CleanData", 
         "s3://bdnc2/jars/CleanData-assembly-1.0.jar",
-        "s3://bdnc2/input/reviews/baby/reviews_Baby.jsonaa",
+        "s3://bdnc2/input/reviews/baby/*",
         "s3://bdnc2/output/baby_features"
     ],
     "ActionOnFailure": "TERMINATE_CLUSTER"
