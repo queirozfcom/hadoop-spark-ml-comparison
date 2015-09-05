@@ -125,7 +125,7 @@ object CleanData{
 			case 1 => 0.0
 			case _ => 0.0 // just to make sure nothing gets through
 		}
-
+		
 	}
 
 	// outputs 1.0 if given timestamp represents a time after noon (PM), 0.0 otherwise
