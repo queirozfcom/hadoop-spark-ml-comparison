@@ -29,6 +29,7 @@ object CleanData{
 
 	def main(args:Array[String]){
 
+
 		if(args.length < 1){
 			System.err.println("Please set arguments for <s3_input_dir> <s3_output_dir>")
 			System.exit(1)
@@ -37,7 +38,6 @@ object CleanData{
 		val inputDir  = args(0)
 		val outputDir = args(1)	
 
-		val cnf      = new SparkConf().setAppName("Cleaning and Featurizing Amazon Review Data")
 		val sc       = new SparkContext(cnf)
 		
 		val sqlContext = new SQLContext(sc)
@@ -53,7 +53,9 @@ object CleanData{
 	    // and any bad timestamps
 	    val cleanRDD = reviewsDF.rdd.filter{row:Row => 
 
-	    	val unixTimestampIndex = row.fieldIndex("unixReviewTime")
+	    	// this caused an error in spark:
+	    	// val unixTimestampIndex = row.fieldIndex("unixReviewTime")
+	    	val unixTimestampIndex = 8
 	    	val tryLong = Try(row.getLong(unixTimestampIndex))
 
 	    	(row.anyNull == false && tryLong.isSuccess)
