@@ -1,0 +1,18 @@
+[
+  {
+    "Name": "NaiveKMeansCached",
+    "Type":"CUSTOM_JAR",
+    "Jar":"command-runner.jar",
+    "Args": 
+    [
+        "spark-submit",
+        "--deploy-mode", "cluster",
+        "--class", "NaiveKMeans", 
+        "s3://bdnc2/jars/NaiveKMeansCaching-assembly-1.0.jar",
+        "s3://bdnc2/input/reviews/baby_features/",
+        "3",
+        "100"
+    ],
+    "ActionOnFailure": "TERMINATE_CLUSTER"
+  }
+]

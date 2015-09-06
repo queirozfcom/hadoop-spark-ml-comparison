@@ -1,0 +1,11 @@
+aws emr create-cluster \
+    --name "Naive Kmeans Spark Cached" \
+    --instance-type m3.xlarge \
+    --release-label emr-4.0.0 \
+    --instance-count 2 \
+    --log-uri s3://bdnc2/logs/spark_naive_kmeans_cached_1_1 \
+    --use-default-roles \
+    --applications Name=Spark \
+    --steps file://../emr_configs/spark_naive_kmeans_cached_step.json \
+    --configurations file://../emr_configs/spark_config.json \
+    --auto-terminate
