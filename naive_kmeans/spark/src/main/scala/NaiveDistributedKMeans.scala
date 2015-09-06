@@ -78,7 +78,8 @@ object NaiveDistributedKMeans{
     val featuresRDD = featuresDF.rdd
 
     // these are the starting centers
-    val kPoints = featuresRDD.takeSample(withReplacement = false, num=k , seed=seed).toArray
+    // it's an Array of centers
+    val kPoints:Array[Vector[Double]] = featuresRDD.map(parseVector _).takeSample(withReplacement = false, num=k , seed=seed).toArray
 
     // start with a large number for the delta
     var delta = 1.0
