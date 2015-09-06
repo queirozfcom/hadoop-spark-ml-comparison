@@ -85,7 +85,9 @@ object CleanData{
 
     // outputs 1.0 if given timestamp represents a weekday, 0.0 otherwise
     private val timestampIsWeekDayUDF = udf{ unixTimestamp:Long =>
+
         val date = new DateTime(unixTimestamp * 1000L)
+            
         date.getDayOfWeek match{
             case 1 => 1.0
             case 2 => 1.0
@@ -99,7 +101,9 @@ object CleanData{
 
     // outputs 1.0 if given timestamp represents weekend, 0.0 otherwise
     private val timestampIsWeekendUDF = udf{ unixTimestamp:Long =>
+
         val date = new DateTime(unixTimestamp * 1000L)
+
         date.getDayOfWeek match{
             case 1 => 0.0
             case 2 => 0.0
@@ -113,6 +117,7 @@ object CleanData{
 
     // outputs 1.0 if given timestamp represents a time before noon (AM), 0.0 otherwise
     private val timestampIsAMUDF = udf{ unixTimestamp:Long =>
+
         val elevenFiftyNine = new LocalTime(11,59,59)
         val date = new DateTime(unixTimestamp * 1000L)
 
@@ -121,11 +126,11 @@ object CleanData{
             case 1 => 0.0
             case _ => 0.0 // just to make sure nothing gets through
         }
-
     }
 
     // outputs 1.0 if given timestamp represents a time after noon (PM), 0.0 otherwise
     private val timestampIsPMUDF = udf{ unixTimestamp:Long =>
+
         val elevenFiftyNine = new LocalTime(11,59,59)
         val date = new DateTime(unixTimestamp * 1000L)
 
@@ -138,6 +143,7 @@ object CleanData{
 
     // given a pair of ints, return the first divided by the second
     private val getRatioUDF = udf{ pair: Seq[Long] =>
+
         if( pair(1) == 0 ) 0.0
         else ( pair(0).toDouble/pair(1).toDouble )
     }
