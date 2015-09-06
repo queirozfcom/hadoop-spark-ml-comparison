@@ -65,7 +65,7 @@ object CleanData{
 
         // transformations
         val featuresDF = cleanDF.select(
-            col("overall").as("scoreGiven"),
+            col("overall").as("score"),
             stringLengthUDF(col("reviewText")).as("reviewLength"),
             timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
             timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
@@ -77,18 +77,18 @@ object CleanData{
         // need to be normalized, because the others were given either 0.0
         // or 1.0 and are thus already normalized    
         val maxValues = featuresDF.select( 
-            max(col("scoreGiven")),
+            max(col("score")),
             max(col("reviewLength")),
-            max(col("percentHelpful"))).first
+            max(col("pctHelpful"))).first
 
         val maxScore = maxValues.getDouble(0)
         val maxReviewLength = maxValues.getDouble(1)
         val maxpercentHelpful = maxValues.getDouble(2)
 
         val minValues = featuresDF.select(
-            min(col("scoreGiven")),
+            min(col("score")),
             min(col("reviewLength")),
-            min(col("percentHelpful"))).first
+            min(col("pctHelpful"))).first
 
         val minScore = minValues.getDouble(0)
         val minReviewLength = minValues.getDouble(1)
@@ -96,13 +96,13 @@ object CleanData{
 
         // produce full dataframe
         val normalizedFeaturesDF = featuresDF.select(
-            normalizerUDF(minScore,maxScore)(col("scoreGiven")).as("normScore"),
+            normalizerUDF(minScore,maxScore)(col("score")).as("normScore"),
             normalizerUDF(minReviewLength,maxReviewLength)(col("reviewLength")).as("normReviewLength"),
             col("weekDay"),
             col("weekend"),
             col("AM"),
             col("PM"),
-            normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("percentHelpful")).as("normPctHelpful"))
+            normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("pctHelpful")).as("normPctHelpful"))
 
 
 
