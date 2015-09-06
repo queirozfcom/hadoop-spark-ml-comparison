@@ -78,7 +78,7 @@ object CleanData{
         // or 1.0 and are thus already normalized    
         val maxValues = featuresDF.select( 
             max(col("scoreGiven")),
-            max(col("reviewTextLength")),
+            max(col("reviewLength")),
             max(col("percentHelpful"))).first
 
         val maxScore = maxValues.getDouble(0)
@@ -87,7 +87,7 @@ object CleanData{
 
         val minValues = featuresDF.select(
             min(col("scoreGiven")),
-            min(col("reviewTextLength")),
+            min(col("reviewLength")),
             min(col("percentHelpful"))).first
 
         val minScore = minValues.getDouble(0)
