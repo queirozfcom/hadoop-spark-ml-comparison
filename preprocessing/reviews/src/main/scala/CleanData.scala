@@ -81,18 +81,18 @@ object CleanData{
             max(col("reviewTextLength")),
             max(col("percentHelpful"))).first
 
-        val maxScore = maxValues(0)
-        val maxReviewTextLength = maxValues(1)
-        val maxpercentHelpful = maxValues(2)
+        val maxScore = maxValues(0).toDouble
+        val maxReviewTextLength = maxValues(1).toDouble
+        val maxpercentHelpful = maxValues(2).toDouble
 
         val minValues = featuresDF.select(
             min(col("scoreGiven")),
             min(col("reviewTextLength")),
             min(col("percentHelpful"))).first
 
-        val minScore = minValues(0)
-        val minReviewTextLength = minValues(1)
-        val minPercentHelpful = minValues(2)
+        val minScore = minValues(0).toDouble
+        val minReviewTextLength = minValues(1).toDouble
+        val minPercentHelpful = minValues(2).toDouble
 
         // produce full dataframe
         val normalizedFeaturesDF = featuresDF.select(
