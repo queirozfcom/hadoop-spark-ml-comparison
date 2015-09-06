@@ -82,7 +82,7 @@ object CleanData{
             max(col("percentHelpful"))).first
 
         val maxScore = maxValues.getDouble(0)
-        val maxReviewTextLength = maxValues.getDouble(1)
+        val maxReviewLength = maxValues.getDouble(1)
         val maxpercentHelpful = maxValues.getDouble(2)
 
         val minValues = featuresDF.select(
@@ -91,18 +91,20 @@ object CleanData{
             min(col("percentHelpful"))).first
 
         val minScore = minValues.getDouble(0)
-        val minReviewTextLength = minValues.getDouble(1)
+        val minReviewLength = minValues.getDouble(1)
         val minPercentHelpful = minValues.getDouble(2)
 
         // produce full dataframe
         val normalizedFeaturesDF = featuresDF.select(
             normalizerUDF(minScore,maxScore)(col("scoreGiven")).as("normScore"),
-            normalizerUDF(minReviewTextLength,maxReviewTextLength)(col("normReviewLength")),
+            normalizerUDF(minReviewLength,maxReviewLength)(col("reviewLength")).as("normReviewLength"),
             col("weekDay"),
             col("weekend"),
             col("AM"),
             col("PM"),
             normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("percentHelpful")).as("normPctHelpful"))
+
+
 
         // save as JSON so we can use it again later    
         normalizedFeaturesDF.toJSON.saveAsTextFile(outputDir) 
