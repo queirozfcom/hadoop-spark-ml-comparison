@@ -186,7 +186,7 @@ object CleanData{
 
     // all values in the dataframe need to be normalized so that they fall within 0.0 and 1.0
     // otherwise values with larger absolute values will dominate all others
-    private val normalizerUDF(minValue:Double,maxValue:Double) = udf{ targetValue:Double =>
+    private def normalizerUDF(minValue:Double,maxValue:Double) = udf{ targetValue:Double =>
         if((maxValue - minValue) == 0.0) 0.0
         else (targetValue - minValue) / (maxValue - minValue)    
     }
