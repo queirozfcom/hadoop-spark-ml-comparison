@@ -86,10 +86,15 @@ object NaiveDistributedKMeans{
     var currIter = 0
 
     // iterate until the centers haven't moved more than convergeDist
-    while(lastDist > convergeDist && currIter <= maxIters) {
+    while(delta > convergeDist && currIter <= maxIters) {
       
       // RDD[(clusterIndex,(sample,1))]
-      val closestClustersRDD = featuresRDD.map(sample => (closestCluster(sample, kPoints), (sample, 1)))
+      val closestClustersRDD = featuresRDD
+                                .map{sample =>
+                                  parseVector(sample)
+                                }.map{ vect =>
+                                  (closestCluster(vect, kPoints), (vect, 1))
+                                }
 
       // aggregate by clusterIndex
       val pointCounts     = closestClustersRDD.reduceByKey{ case ((p1, c1), (p2, c2)) => 
@@ -113,7 +118,7 @@ object NaiveDistributedKMeans{
       }
 
       println(s"Finished iteration $currIter, (delta = $delta) ")
-      currIter += 1
+      currIter = currIter + 1
     }
 
     // final centers
