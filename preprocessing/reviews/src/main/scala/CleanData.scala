@@ -66,12 +66,12 @@ object CleanData{
         // transformations
         val featuresDF = cleanDF.select(
             col("overall").as("scoreGiven"),
-            stringLengthUDF(col("reviewText")).as("reviewTextLength"),
+            stringLengthUDF(col("reviewText")).as("reviewLength"),
             timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
             timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
             timestampIsAMUDF(col("unixReviewTime")).as("AM"),
             timestampIsPMUDF(col("unixReviewTime")).as("PM"),
-            getRatioUDF(col("helpful")).as("percentHelpful"))
+            getRatioUDF(col("helpful")).as("pctHelpful"))
             
         // only scoreGiven, reviewTextLength and percentHelpful columns
         // need to be normalized, because the others were given either 0.0
@@ -96,13 +96,13 @@ object CleanData{
 
         // produce full dataframe
         val normalizedFeaturesDF = featuresDF.select(
-            normalizerUDF(minScore,maxScore)(col("scoreGiven")),
-            normalizerUDF(minReviewTextLength,maxReviewTextLength)(col("reviewTextLength")),
+            normalizerUDF(minScore,maxScore)(col("scoreGiven")).as("normScore"),
+            normalizerUDF(minReviewTextLength,maxReviewTextLength)(col("normReviewLength")),
             col("weekDay"),
             col("weekend"),
             col("AM"),
             col("PM"),
-            normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("percentHelpful")))
+            normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("percentHelpful")).as("normPctHelpful"))
 
         // save as JSON so we can use it again later    
         normalizedFeaturesDF.toJSON.saveAsTextFile(outputDir) 
