@@ -56,21 +56,19 @@ object NaiveKMeans{
   def main(args: Array[String]) {
 
     if(args.length < 1){
-        System.err.println("Please set arguments for <s3_input_dir> <s3_output_dir> <numclusters>")
+        System.err.println("Please set arguments for <s3_input_dir> <numclusters> <maxIters>")
         System.exit(1)
     }
 
     val rand       = Random
     val inputDir   = args(0)
-    val outputDir  = args(1)
-    val k          = args(2).toInt
+    val k          = args(1).toInt
+    val maxIters   = args(2).toInt
 
     val convergeDist = 0.001
     val seed = rand.nextInt
 
-    val maxIters = 100
-
-    val cnf        = new SparkConf().setAppName("Naive distributed K-means implementation using Apache Spark")
+    val cnf        = new SparkConf().setAppName("Naive distributed K-means implementation using Apache Spark  (using caching feature)")
     val sc         = new SparkContext(cnf)
 
     val sqlContext = new SQLContext(sc)
@@ -82,7 +80,10 @@ object NaiveKMeans{
 
     // these are the starting centers
     // it's an Array of centers
-    val kPoints:Array[Vector[Double]] = featuresRDD.map(parseVector _).takeSample(withReplacement = false, num=k , seed=seed).toArray
+    val kPoints:Array[Vector[Double]] = featuresRDD
+                                         .map(parseVector _)
+                                         .takeSample(withReplacement = false, num=k , seed=seed)
+                                         .toArray
 
     // start with a large number for the delta
     var delta = 1.0
@@ -94,16 +95,14 @@ object NaiveKMeans{
       
       // RDD[(clusterIndex,(sample,1))]
       val closestClustersRDD = featuresRDD
-                                .map{sample =>
-                                  parseVector(sample)
-                                }.map{ vect =>
-                                  (closestCluster(vect, kPoints), (vect, 1))
-                                }
+                                .map(sample => parseVector(sample))
+                                .map(vect => (closestCluster(vect, kPoints), (vect, 1)))
 
       // aggregate by clusterIndex
-      val pointCounts     = closestClustersRDD.reduceByKey{ case ((p1, c1), (p2, c2)) => 
-        (p1 + p2, c1 + c2) 
-      }
+      val pointCounts     = closestClustersRDD
+                            .reduceByKey{ case ((p1, c1), (p2, c2)) => 
+                              (p1 + p2, c1 + c2) 
+                            }
 
       val newPoints = pointCounts.map {pair =>
         (pair._1, pair._2._1 * (1.0 / pair._2._2))

@@ -1,4 +1,4 @@
-name := "NaiveKMeans"
+name := "NaiveKMeansCaching"
 
 version := "1.0"
 
