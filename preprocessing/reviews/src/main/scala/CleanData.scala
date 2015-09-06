@@ -3,7 +3,7 @@ import scala.util.Try
 import org.apache.spark._
 import org.apache.spark.SparkContext._
 import org.apache.spark.sql.{SQLContext,Row}
-import org.apache.spark.sql.functions.{udf,col}
+import org.apache.spark.sql.functions.{udf,col,max,min}
 
 import org.joda.time.{DateTime,LocalTime}
 
@@ -64,7 +64,8 @@ object CleanData{
         val cleanDF = sqlContext.createDataFrame(cleanRDD,schema)
 
         // transformations
-        val featuresDF = cleanDF.select(col("overall").as("scoreGiven"),
+        val featuresDF = cleanDF.select(
+            col("overall").as("scoreGiven"),
             stringLengthUDF(col("reviewText")).as("reviewTextLength"),
             timestampIsWeekDayUDF(col("unixReviewTime")).as("weekDay"),
             timestampIsWeekendUDF(col("unixReviewTime")).as("weekend"),
@@ -72,11 +73,46 @@ object CleanData{
             timestampIsPMUDF(col("unixReviewTime")).as("PM"),
             getRatioUDF(col("helpful")).as("percentHelpful"))
             
+        // only scoreGiven, reviewTextLength and percentHelpful columns
+        // need to be normalized, because the others were given either 0.0
+        // or 1.0 and are thus already normalized    
+        val maxValues = featuresDF.select( 
+            max(col("scoreGiven")),
+            max(col("reviewTextLength")),
+            max(col("percentHelpful"))).first
+
+        val maxScore = maxValues(0)
+        val maxReviewTextLength = maxValues(1)
+        val maxpercentHelpful = maxValues(2)
+
+        val minValues = featuresDF.select(
+            min(col("scoreGiven")),
+            min(col("reviewTextLength")),
+            min(col("percentHelpful"))).first
+
+        val minScore = minValues(0)
+        val minReviewTextLength = minValues(1)
+        val minPercentHelpful = minValues(2)
+
+        // produce full dataframe
+        val normalizedFeaturesDF = featuresDF.select(
+            normalizerUDF(minScore,maxScore)(col("scoreGiven")),
+            normalizerUDF(minReviewTextLength,maxReviewTextLength)(col("reviewTextLength")),
+            col("weekDay"),
+            col("weekend"),
+            col("AM"),
+            col("PM"),
+            normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("percentHelpful")))
+
         // save as JSON so we can use it again later    
-        featuresDF.toJSON.saveAsTextFile(outputDir) 
+        normalizedFeaturesDF.toJSON.saveAsTextFile(outputDir) 
         sc.stop()
         
     }
+
+    /**********************************
+    * UDFs: User-Defined Functions
+    ***********************************/
 
     // returns the length of given text
     private val stringLengthUDF = udf{txt:String => 
@@ -146,6 +182,13 @@ object CleanData{
 
         if( pair(1) == 0 ) 0.0
         else ( pair(0).toDouble/pair(1).toDouble )
+    }
+
+    // all values in the dataframe need to be normalized so that they fall within 0.0 and 1.0
+    // otherwise values with larger absolute values will dominate all others
+    private val normalizerUDF(minValue:Double,maxValue:Double) = udf{ targetValue:Double =>
+        if((maxValue - minValue) == 0.0) 0.0
+        else (targetValue - minValue) / (maxValue - minValue)    
     }
 
 }
