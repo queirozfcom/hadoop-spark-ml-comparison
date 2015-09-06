@@ -6,6 +6,8 @@ import org.apache.spark.SparkContext._
 import org.apache.spark.sql.{SQLContext,Row}
 import org.apache.spark.sql.functions.{udf,col,max,min}
 
+import scala.util.Random
+
 /**
  * Naive distributed K-means clustering.
  * 
@@ -58,12 +60,13 @@ object NaiveKMeans{
         System.exit(1)
     }
 
+    val rand       = Random
     val inputDir   = args(0)
     val outputDir  = args(1)
     val k          = args(2).toInt
 
     val convergeDist = 0.001
-    val seed = 29
+    val seed = rand.nextInt
 
     val maxIters = 100
 
