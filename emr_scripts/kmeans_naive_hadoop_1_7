@@ -1,0 +1,11 @@
+aws emr create-cluster \
+    --name "Hadoop Naive KMeans 1/7 Hard" \
+    --instance-type m3.2xlarge \
+    --release-label emr-4.0.0 \
+    --instance-count 8 \
+    --use-default-roles \
+    --log-uri s3://bdnc2/logs/hadoop_naive_kmeans_1_7 \
+    --applications file://../emr_configs/applications.json \
+    --steps file://../emr_configs/hadoop_naive_kmeans_step.json \
+    --configurations file://../emr_configs/hadoop_config.json \
+    --auto-terminate

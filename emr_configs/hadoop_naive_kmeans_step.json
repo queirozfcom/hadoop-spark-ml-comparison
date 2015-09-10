@@ -1,0 +1,15 @@
+[
+  {
+    "Name": "naive_kmeans",
+    "Args": [
+        "s3://bdnc2/input/reviews/features/book_features/",
+        "s3://bdnc2/output/naive_kmeans_hadoop/",
+        "3",
+        "7"
+    ],
+    "Jar": "s3://bdnc2/jars/NaiveKMeansHadoop-assembly-1.0.jar",
+    "ActionOnFailure": "TERMINATE_CLUSTER",
+    "MainClass": "NaiveKMeans",
+    "Type": "CUSTOM_JAR"
+  }
+]

@@ -1,0 +1,12 @@
+[
+ {
+   "Classification": "mapred-site",
+   "Properties": {
+       "mapreduce.input.fileinputformat.input.dir.recursive": "true",
+       "mapreduce.task.timeout":"1200000",
+       "mapreduce.reduce.java.opts": "-Xmx6500m",
+       "mapreduce.reduce.memory.mb": "-1",
+       "mapreduce.job.reduces":"1"
+   }
+ }
+]

@@ -8,9 +8,9 @@
         "spark-submit",
         "--deploy-mode", "cluster",
         "--class", "CleanData", 
-        "s3://bdnc2/jars/CleanData-assembly-1.0.jar",
+        "s3://bdnc2/jars/CleanDataToSequenceFile-assembly-1.0.jar",
         "s3://bdnc2/input/reviews/raw/books/*",
-        "s3://bdnc2/input/reviews/features/book_features/"
+        "s3://bdnc2/input/reviews/features_sequencefiles/book_features/"
     ],
     "ActionOnFailure": "TERMINATE_CLUSTER"
   }

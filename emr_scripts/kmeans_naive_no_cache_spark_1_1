@@ -1,11 +1,11 @@
 aws emr create-cluster \
-    --name "Clean Review Data 1/0" \
+    --name "Naive Kmeans Spark No Cache 1/1" \
     --instance-type m3.xlarge \
     --release-label emr-4.0.0 \
-    --instance-count 1 \
-    --log-uri s3://bdnc2/logs/spark_cleandata_1_0 \
+    --instance-count 2 \
+    --log-uri s3://bdnc2/logs/spark_naive_kmeans_no_cache_1_1 \
     --use-default-roles \
     --applications Name=Spark \
-    --steps file://../emr_configs/spark_clean_review_data_step.json \
+    --steps file://../emr_configs/spark_naive_kmeans_no_cache_step.json \
     --configurations file://../emr_configs/spark_config.json \
     --auto-terminate

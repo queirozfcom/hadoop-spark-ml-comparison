@@ -1,6 +1,6 @@
 [
   {
-    "Name": "NaiveKMeansCached",
+    "Name": "NaiveKMeansNoCache",
     "Type":"CUSTOM_JAR",
     "Jar":"command-runner.jar",
     "Args": 
@@ -8,7 +8,7 @@
         "spark-submit",
         "--deploy-mode", "cluster",
         "--class", "NaiveKMeans", 
-        "s3://bdnc2/jars/NaiveKMeansCaching-assembly-1.0.jar",
+        "s3://bdnc2/jars/NaiveKMeansNoCaching-assembly-1.0.jar",
         "s3://bdnc2/input/reviews/features/book_features/*",
         "3",
         "10000"

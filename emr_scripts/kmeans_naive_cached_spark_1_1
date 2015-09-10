@@ -1,5 +1,5 @@
 aws emr create-cluster \
-    --name "Naive Kmeans Spark Cached" \
+    --name "Naive Kmeans Spark Cached 1/1" \
     --instance-type m3.xlarge \
     --release-label emr-4.0.0 \
     --instance-count 2 \

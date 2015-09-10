@@ -1,4 +1,4 @@
-name := "CleanData"
+name := "CleanDataToSequenceFile"
 
 version := "1.0"
 

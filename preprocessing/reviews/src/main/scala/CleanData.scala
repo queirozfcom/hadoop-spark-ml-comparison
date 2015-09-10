@@ -104,10 +104,8 @@ object CleanData{
             col("PM"),
             normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("pctHelpful")).as("normPctHelpful"))
 
-
-
-        // save as JSON so we can use it again later    
-        normalizedFeaturesDF.toJSON.saveAsTextFile(outputDir) 
+        // save as hadoop sequence file so we can use it again later   
+        normalizedFeaturesDF.rdd.saveAsObjectFile(outputDir)
         sc.stop()
         
     }
