@@ -1,4 +1,4 @@
-package com.queirozf.formatting
+package com.queirozf.formatting;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
