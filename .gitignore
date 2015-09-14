@@ -20,6 +20,3 @@ project/plugins/project/
 # idea stuff
 *.iml
 .idea/
-**/.idea/
-**/**/.idea/
-**/**/**/.idea/
