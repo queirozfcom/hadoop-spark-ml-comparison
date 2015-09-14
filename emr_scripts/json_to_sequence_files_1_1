@@ -1,0 +1,11 @@
+aws emr create-cluster \
+    --name "Hadoop/Mahout Json to SequenceFile 1/1" \
+    --instance-type m3.xlarge \
+    --release-label emr-4.0.0 \
+    --instance-count 2 \
+    --use-default-roles \
+    --log-uri s3://bdnc2/logs/json_to_seqfiles \
+    --applications file://../emr_configs/applications.json \
+    --steps file://../emr_configs/hadoop_json_to_sequence_files_step.json \
+    --configurations file://../emr_configs/hadoop_config.json \
+    --auto-terminate

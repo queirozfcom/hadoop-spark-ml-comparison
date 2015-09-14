@@ -21,12 +21,11 @@ import java.util.Vector;
 /**
  * A simple class to turn Json k-v pairs into sequencefiles, for consumption by Mahout
  */
-class SeqFileFormatter {
-
+public class SeqFileFormatter {
 
     public static void main(String[] args) throws Exception {
 
-        if (args.length < 4) {
+        if (args.length < 2) {
             System.out.println("Usage: hadoop jar path/to/jar.jar SeqFileFormatter <inputpath> <outputpath>");
             System.exit(1);
         }
@@ -38,7 +37,6 @@ class SeqFileFormatter {
 
         Path in = new Path(args[0]);
         Path out = new Path(args[1]);
-
 
         Job job = Job.getInstance(conf);
 
@@ -57,7 +55,7 @@ class SeqFileFormatter {
         job.setInputFormatClass(JsonInputFormat.class);
         job.setOutputFormatClass(SequenceFileOutputFormat.class);
 
-        job.setOutputKeyClass(VectorWritable.class);
+        job.setOutputKeyClass(LongWritable.class);
         job.setOutputValueClass(VectorWritable.class);
 
         job.waitForCompletion(true);
@@ -65,7 +63,7 @@ class SeqFileFormatter {
     }
 
 
-    class SeqFileMapper extends Mapper<LongWritable, MapWritable, LongWritable, VectorWritable> {
+    public static class SeqFileMapper extends Mapper<LongWritable, MapWritable, LongWritable, VectorWritable> {
         public void map(LongWritable key, MapWritable value, Context context) throws IOException, InterruptedException {
 
             // sorry about this
