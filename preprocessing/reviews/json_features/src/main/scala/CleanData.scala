@@ -29,7 +29,6 @@ object CleanData{
 
     def main(args:Array[String]){
 
-
         if(args.length < 1){
             System.err.println("Please set arguments for <s3_input_dir> <s3_output_dir>")
             System.exit(1)
@@ -104,8 +103,7 @@ object CleanData{
             col("PM"),
             normalizerUDF(minPercentHelpful,maxpercentHelpful)(col("pctHelpful")).as("normPctHelpful"))
 
-        // save as hadoop sequence file so we can use it again later   
-        normalizedFeaturesDF.rdd.saveAsObjectFile(outputDir)
+        normalizedFeaturesDF.write.json(outputDir)
         sc.stop()
         
     }
