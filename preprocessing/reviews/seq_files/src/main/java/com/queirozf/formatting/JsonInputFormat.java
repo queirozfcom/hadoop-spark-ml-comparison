@@ -16,8 +16,7 @@ import java.io.IOException;
  * This was written by alex holmes, github.com/alexholmes/hadoop-book
  *
  */
-public class JsonInputFormat
-        extends FileInputFormat<LongWritable, MapWritable> {
+public class JsonInputFormat extends FileInputFormat<LongWritable, MapWritable> {
 
 
     @Override
@@ -28,8 +27,7 @@ public class JsonInputFormat
         return new JsonRecordReader();
     }
 
-    public static class JsonRecordReader
-            extends RecordReader<LongWritable, MapWritable> {
+    public static class JsonRecordReader extends RecordReader<LongWritable, MapWritable> {
 
         private LineRecordReader reader = new LineRecordReader();
 

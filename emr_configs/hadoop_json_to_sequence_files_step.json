@@ -3,7 +3,7 @@
     "Name": "Convert Json Features to SeqFiles",
     "Args": [
         "s3://bdnc2/input/reviews/features/book_features/",
-        "s3://bdnc2/input/reviews/features_seq_files/book_features/"
+        "s3://bdnc2/input/reviews/features_seq_files/book_features2/"
     ],
     "Jar": "s3://bdnc2/jars/seq_files-1.0-SNAPSHOT-job.jar",
     "ActionOnFailure": "TERMINATE_CLUSTER",

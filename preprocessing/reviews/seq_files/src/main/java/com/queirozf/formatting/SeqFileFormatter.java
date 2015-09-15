@@ -59,7 +59,6 @@ public class SeqFileFormatter {
         job.setOutputValueClass(VectorWritable.class);
 
         job.waitForCompletion(true);
-
     }
 
 
@@ -67,7 +66,7 @@ public class SeqFileFormatter {
         public void map(LongWritable key, MapWritable value, Context context) throws IOException, InterruptedException {
 
             // sorry about this
-            double[] newSample = new double[99];
+            double[] newSample = new double[7];
 
             int i = 0;
 
@@ -82,7 +81,6 @@ public class SeqFileFormatter {
             VectorWritable vw = new VectorWritable(dw);
 
             context.write(key, vw);
-
         }
     }
 
