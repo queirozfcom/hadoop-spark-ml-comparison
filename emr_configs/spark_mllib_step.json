@@ -9,7 +9,7 @@
         "--deploy-mode", "cluster",
         "--class", "com.queirozf.clustering.MLLibKMeans", 
         "s3://bdnc2/jars/KMeansMLLib-assembly-1.0.jar",
-        "s3://bdnc2/input/reviews/raw/books/*",
+        "s3://bdnc2/input/reviews/features/book_features/*",
         "s3://bdnc2/output/mllib_kmeans",
         "3"
     ],

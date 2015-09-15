@@ -1,4 +1,4 @@
-name := "CleanDataToSequenceFile"
+name := "FeatureAndNormalizeDataToJsonFile"
 
 version := "1.0"
 

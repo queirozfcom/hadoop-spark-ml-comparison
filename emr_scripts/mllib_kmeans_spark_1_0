@@ -1,9 +1,9 @@
 aws emr create-cluster \
-    --name "MLLib KMeans 1/3" \
+    --name "MLLib KMeans 1/0" \
     --instance-type m3.xlarge \
     --release-label emr-4.0.0 \
-    --instance-count 4 \
-    --log-uri s3://bdnc2/logs/spark_mllib_1_3 \
+    --instance-count 1 \
+    --log-uri s3://bdnc2/logs/spark_mllib_1_0 \
     --use-default-roles \
     --applications Name=Spark \
     --steps file://../emr_configs/spark_mllib_step.json \
