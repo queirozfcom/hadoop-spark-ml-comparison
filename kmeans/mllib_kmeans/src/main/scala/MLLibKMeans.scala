@@ -10,22 +10,10 @@ import helpers.UDF.{normalizerUDF, getRatioUDF, stringLengthUDF, timestampIsAMUD
 import helpers.Rows.numericDataFrameToVectorRDD
 
 /**
- * Script to clean our dataset.
+ * Kmeans on mllib
  *
  * input dataset shape:
  *
- * |-- asin: string (nullable = true)
- * |-- helpful: array (nullable = true)
- * |    |-- element: long (containsNull = true)
- * |-- overall: double (nullable = true)
- * |-- reviewText: string (nullable = true)
- * |-- reviewTime: string (nullable = true)
- * |-- reviewerID: string (nullable = true)
- * |-- reviewerName: string (nullable = true)
- * |-- summary: string (nullable = true)
- * |-- unixReviewTime: long (nullable = true)
- *
- * after featurization, it looks like this
  *
  * |-- AM: double (nullable = true)
  * |-- PM: double (nullable = true)
@@ -35,7 +23,6 @@ import helpers.Rows.numericDataFrameToVectorRDD
  * |-- weekDay: double (nullable = true)
  * |-- weekend: double (nullable = true)
  *
- * and then we run KMeans on it
  *
  *
  */
@@ -64,7 +51,8 @@ object MLLibKMeans {
     // features have already been normalized
     val featuresDF = sqlContext.jsonFile(inputDir)
 
-      // now we can start kmeans proper
+    // this converts a dataframe into a RDD[Vector]
+    // so we can start kmeans proper
     val vectorRDD = numericDataFrameToVectorRDD(featuresDF)
 
     vectorRDD.cache()
