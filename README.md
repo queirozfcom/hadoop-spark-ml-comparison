@@ -3,11 +3,32 @@ Code used for university coursework aimed at comparing Hadoop and Spark function
 
 This project consists of 2 (plus one discarded task) tasks we ran in order to compare the performance of Hadoop MapReduce and Spark, as well as Mahout (running on top of Hadoop MapReduce) and Spark's MLLib machine learning library.
 
-### The experiments
+> All code used for the experiments are in this repository!
+
+## The experiments
+
+All experiments were executed on AWS infrastructure - more specifically, AWS ElasticMapReduce, on 1, 2, 4, 8 and 16 m3.xlarge nodes.
+
+**Wordcount**
 
 We ran a standard wordcount experiment over a large dataset using Hadoop and Spark, the results being as follows:
 
 ![results1](http://i.imgur.com/qvy6czI.png)
+
+**Distributed KMeans**
+
+We ran the Distributed KMeans algorithms on Mahout (on top of Hadoop MapReduce) and on Spark's MLLib:
+
+![results2](http://i.imgur.com/HwTGUVh)
+
+
+## Findings
+
+- For non-iterative tasks Spark starts off better than Hadoop (w.r.t. execution time) but Hadoop catches up with Spark
+
+- For iterative tasks Spark performs much better than Hadoop.
+
+- For all tasks, enabling Spark's `dynamicAllocation` led to massive performance gains.
 
 
 Special thanks to [Julian McAuley](http://cseweb.ucsd.edu/~jmcauley/) for letting us use the dataset prepared by him.
