@@ -19,7 +19,7 @@ We ran a standard wordcount experiment over a large dataset using Hadoop and Spa
 
 We ran the Distributed KMeans algorithms on Mahout (on top of Hadoop MapReduce) and on Spark's MLLib:
 
-![results2](http://i.imgur.com/HwTGUVh)
+![results2](http://i.imgur.com/HwTGUVh.png)
 
 
 ## Findings
