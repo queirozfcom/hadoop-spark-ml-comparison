@@ -23,7 +23,7 @@ We ran the Distributed KMeans algorithms on Mahout (on top of Hadoop MapReduce) 
 
 **Naïve Distributed KMeans**
 
-We had also intended to include a naïve implementation of Distributed KMeans (as can be seen under `naive_kmeans`) for Hadoop MapReduce and Spark. While the Spark implementation went OK, the Hadoop version did not finish after a long wait so we decided against inluding it in the results.
+We had also intended to include a naïve implementation of Distributed KMeans (as can be seen under [naive_kmeans](https://github.com/queirozfcom/hadoop_spark_ml_comparison/tree/master/naive_kmeans)) for Hadoop MapReduce and Spark. While the Spark implementation went OK, the Hadoop version did not finish after a long wait so we decided against inluding it in the results.
 
 ## Findings
 
